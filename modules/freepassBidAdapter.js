@@ -19,8 +19,14 @@ export const spec = {
 
   isBidRequestValid(bid) {
     logMessage('Validating bid: ', bid);
+
     // TODO: validate bid
-    return true;
+    //   - must have required ortb params
+    //   - must have required freepass params
+    //   - must have required GAM params
+    //   - etc.
+
+    return !!bid.adUnitCode;
   },
 
   buildRequests(validBidRequests, bidderRequest) {
@@ -32,7 +38,6 @@ export const spec = {
       bidRequests: validBidRequests,
       // TODO: Try to autodetect mediaType from bidRequest
       context: { mediaType: BANNER }
-
     });
     logMessage('Interpreted ORTB bid request: ', JSON.stringify(data));
     // TODO: Add user data to bid request
