@@ -3,7 +3,7 @@ import {logMessage} from "../src/utils";
 import {BANNER} from "../src/mediaTypes";
 import {ortbConverter} from '../libraries/ortbConverter/converter.js'
 
-// TODO: Update with official URL or make it configurable
+// TODO: Update with official URL or make it configurable?
 const BIDDER_SERVICE_URL = 'http://127.0.0.1:8080/bid';
 
 const converter = ortbConverter({
@@ -19,15 +19,7 @@ export const spec = {
 
   isBidRequestValid(bid) {
     logMessage('Validating bid: ', bid);
-
-    // TODO: validate bid
-    //   - must have required ortb params
-    //   - must have required freepass params
-    //   - must have required GAM params
-    //   - etc.
-
     let freepassUserId = bid.userId.freepassId || {};
-
     return !!bid.adUnitCode && !!freepassUserId.userId;
   },
 
@@ -52,7 +44,6 @@ export const spec = {
     if (freepassUserId.userIp) {
       data.user.ext.userIp = freepassUserId.userIp;
     }
-
     logMessage('Augmented ORTB bid request user: ', data.user);
 
     return {
