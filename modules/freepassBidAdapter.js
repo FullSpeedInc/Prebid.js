@@ -26,7 +26,9 @@ export const spec = {
     //   - must have required GAM params
     //   - etc.
 
-    return !!bid.adUnitCode;
+    let freepassUserId = bid.userId.freepassId || {};
+
+    return !!bid.adUnitCode && !!freepassUserId.userId;
   },
 
   buildRequests(validBidRequests, bidderRequest) {
@@ -39,8 +41,19 @@ export const spec = {
       // TODO: Try to autodetect mediaType from bidRequest
       context: { mediaType: BANNER }
     });
-    logMessage('Interpreted ORTB bid request: ', JSON.stringify(data));
-    // TODO: Add user data to bid request
+    logMessage('Interpreted ORTB bid request: ', data);
+
+    let freepassUserId = validBidRequests[0].userId.freepassId || {};
+    data.user.id = freepassUserId.userId;
+    data.user.ext = {};
+    if (freepassUserId.commonId) {
+      data.user.ext.fuid = freepassUserId.commonId;
+    }
+    if (freepassUserId.userIp) {
+      data.user.ext.userIp = freepassUserId.userIp;
+    }
+
+    logMessage('Augmented ORTB bid request user: ', data.user);
 
     return {
       method: 'POST',
@@ -53,7 +66,7 @@ export const spec = {
     logMessage('Interpreting server response: ', serverResponse);
     logMessage('Bid request: ', bidRequest);
     const bids = converter.fromORTB({request: bidRequest.data, response: serverResponse.body}).bids;
-    logMessage('Interpreted ORTB bids: ', JSON.stringify(bids));
+    logMessage('Interpreted ORTB bids: ', bids);
 
     return bids;
   },
