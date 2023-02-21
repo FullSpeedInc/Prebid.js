@@ -13,6 +13,37 @@ const converter = ortbConverter({
   }
 });
 
+function prepareUserInfo(user, freepassId) {
+  let userInfo = user || {};
+  let extendedUserInfo = userInfo.ext || {};
+
+  if (!freepassId.userId) {
+    throw new Error('FreePass UserID is not defined');
+  }
+  userInfo.id = freepassId.userId;
+
+  if (freepassId.commonId) {
+    extendedUserInfo.fuid = freepassId.commonId;
+  }
+  userInfo.ext = extendedUserInfo;
+
+  return userInfo;
+}
+
+function prepareDeviceInfo(device, freepassId) {
+  let deviceInfo = device || {};
+  let extendedDeviceInfo = deviceInfo.ext || {};
+
+  extendedDeviceInfo.is_accurate_ip = 0;
+  if (freepassId.userIp) {
+    deviceInfo.ip = freepassId.userIp;
+    extendedDeviceInfo.is_accurate_ip = 1;
+  }
+  deviceInfo.ext = extendedDeviceInfo;
+
+  return deviceInfo;
+}
+
 export const spec = {
   code: 'freepass',
   supportedMediaTypes: [BANNER],
@@ -35,16 +66,12 @@ export const spec = {
     });
     logMessage('Interpreted ORTB bid request: ', data);
 
-    let freepassUserId = validBidRequests[0].userId.freepassId || {};
-    data.user.id = freepassUserId.userId;
-    data.user.ext = {};
-    if (freepassUserId.commonId) {
-      data.user.ext.fuid = freepassUserId.commonId;
-    }
-    if (freepassUserId.userIp) {
-      data.user.ext.userIp = freepassUserId.userIp;
-    }
+    let freepassId = validBidRequests[0].userId.freepassId || {};
+    data.user = prepareUserInfo(data.user, freepassId);
+    data.device = prepareDeviceInfo(data.device, freepassId);
+
     logMessage('Augmented ORTB bid request user: ', data.user);
+    logMessage('Augmented ORTB bid request device: ', data.user);
 
     return {
       method: 'POST',
