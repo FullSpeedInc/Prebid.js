@@ -75,7 +75,7 @@ export const spec = {
 
     return {
       method: 'POST',
-      url: BIDDER_SERVICE_URL,
+      url: validBidRequests[0].params.bidServiceUrl || BIDDER_SERVICE_URL,
       data
     };
   },
