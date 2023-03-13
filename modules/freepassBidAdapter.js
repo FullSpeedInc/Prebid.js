@@ -1,9 +1,9 @@
-import {registerBidder} from 'src/adapters/bidderFactory';
-import {logMessage} from "../src/utils";
-import {BANNER} from "../src/mediaTypes";
+import {registerBidder} from '../src/adapters/bidderFactory.js';
+import {logMessage} from '../src/utils.js';
+import {BANNER} from '../src/mediaTypes.js';
 import {ortbConverter} from '../libraries/ortbConverter/converter.js'
 
-// TODO: Update with official URL or make it configurable?
+// TODO: Update with official URL and remove configurability option
 const BIDDER_SERVICE_URL = 'http://127.0.0.1:8080/bid';
 
 const converter = ortbConverter({
@@ -73,9 +73,11 @@ export const spec = {
     logMessage('Augmented ORTB bid request user: ', data.user);
     logMessage('Augmented ORTB bid request device: ', data.user);
 
+    let bidRequestParams = validBidRequests[0].params || {};
+
     return {
       method: 'POST',
-      url: validBidRequests[0].params.bidServiceUrl || BIDDER_SERVICE_URL,
+      url: bidRequestParams.bidServiceUrl || BIDDER_SERVICE_URL,
       data
     };
   },
