@@ -71,7 +71,7 @@ export const spec = {
     data.device = prepareDeviceInfo(data.device, freepassId);
 
     logMessage('Augmented ORTB bid request user: ', data.user);
-    logMessage('Augmented ORTB bid request device: ', data.user);
+    logMessage('Augmented ORTB bid request device: ', data.device);
 
     let bidRequestParams = validBidRequests[0].params || {};
 
