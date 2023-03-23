@@ -55,8 +55,13 @@ export const spec = {
   },
 
   buildRequests(validBidRequests, bidderRequest) {
-    logMessage('Preparing bid request: ', validBidRequests);
-    logMessage('Using bidder request: ', bidderRequest);
+    if (validBidRequests.length === 0) {
+      logMessage('FreePass BidAdapter has no valid bid requests');
+      return [];
+    }
+
+    logMessage('FreePass BidAdapter is preparing bid request: ', validBidRequests);
+    logMessage('FreePass BidAdapter is using bidder request: ', bidderRequest);
 
     const data = converter.toORTB({
       bidderRequest: bidderRequest,
@@ -64,14 +69,14 @@ export const spec = {
       // TODO: Try to autodetect mediaType from bidRequest
       context: { mediaType: BANNER }
     });
-    logMessage('Interpreted ORTB bid request: ', data);
+    logMessage('FreePass BidAdapter interpreted ORTB bid request as ', data);
 
     let freepassId = validBidRequests[0].userId.freepassId || {};
     data.user = prepareUserInfo(data.user, freepassId);
     data.device = prepareDeviceInfo(data.device, freepassId);
 
-    logMessage('Augmented ORTB bid request user: ', data.user);
-    logMessage('Augmented ORTB bid request device: ', data.device);
+    logMessage('FreePass BidAdapter augmented ORTB bid request user: ', data.user);
+    logMessage('FreePass BidAdapter augmented ORTB bid request device: ', data.device);
 
     let bidRequestParams = validBidRequests[0].params || {};
 
@@ -83,10 +88,10 @@ export const spec = {
   },
 
   interpretResponse(serverResponse, bidRequest) {
-    logMessage('Interpreting server response: ', serverResponse);
-    logMessage('Bid request: ', bidRequest);
-    const bids = converter.fromORTB({request: bidRequest.data, response: serverResponse.body}).bids;
-    logMessage('Interpreted ORTB bids: ', bids);
+    logMessage('FreePass BidAdapter is interpreting server response: ', serverResponse);
+    logMessage('FreePass BidAdapter is using bid request: ', bidRequest);
+    const bids = converter.fromORTB({response: serverResponse.body, request: bidRequest.data}).bids;
+    logMessage('FreePass BidAdapter interpreted ORTB bids as ', bids);
 
     return bids;
   },
