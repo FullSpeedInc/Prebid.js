@@ -66,7 +66,6 @@ export const spec = {
     const data = converter.toORTB({
       bidderRequest: bidderRequest,
       bidRequests: validBidRequests,
-      // TODO: Try to autodetect mediaType from bidRequest
       context: { mediaType: BANNER }
     });
     logMessage('FreePass BidAdapter interpreted ORTB bid request as ', data);
