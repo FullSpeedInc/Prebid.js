@@ -28,7 +28,15 @@ export const freepassIdSubmodule = {
   },
 
   extendId: function (config, consent, cachedIdObject) {
-    let freepassData = config.params.freepassData || {};
+    let freepassData = config.params.freepassData;
+    let hasFreepassData = freepassData !== undefined;
+    if (!hasFreepassData) {
+      logMessage('No Freepass Data. CachedIdObject will not be extended: ' + JSON.stringify(cachedIdObject));
+      return {
+        id: cachedIdObject
+      };
+    }
+
     if (freepassData.commonId === cachedIdObject.commonId && freepassData.userIp === cachedIdObject.userIp) {
       logMessage('FreePass ID is already up-to-date: ' + JSON.stringify(cachedIdObject));
       return {
@@ -41,8 +49,8 @@ export const freepassIdSubmodule = {
 
     return {
       id: {
-        commonId: config.params.freepassData.commonId,
-        userIp: config.params.freepassData.userIp,
+        commonId: freepassData.commonId,
+        userIp: freepassData.userIp,
         userId: cachedIdObject.userId,
       },
     };
