@@ -51,6 +51,8 @@ export const spec = {
   isBidRequestValid(bid) {
     logMessage('Validating bid: ', bid);
     let freepassUserId = bid.userId.freepassId || {};
+
+    // TODO: add more validation: ensure media type is BANNER only
     return !!bid.adUnitCode && !!freepassUserId.userId;
   },
 
